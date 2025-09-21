@@ -7,7 +7,22 @@ exports.create = (req, res) => {
 };
 
 exports.list = (req, res) => {
-  res.status(200).json(service.list());
+  let { page = 1, limit = 5 } = req.query;
+  page = parseInt(page);
+  limit = parseInt(limit);
+
+  const tickets = service.list();
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+
+  const results = tickets.slice(startIndex, endIndex);
+
+  res.status(200).json({
+    page,
+    limit,
+    total: tickets.length,
+    data: results
+  });
 };
 
 exports.assign = (req, res) => {
